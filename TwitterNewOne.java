@@ -4,9 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,6 +29,11 @@ public class TwitterNewOne {
             responseEntity = new ResponseEntity<>("Invalid Email",
                     HttpStatus.BAD_REQUEST);
         }
+       else if(password=="")
+        {
+            responseEntity = new ResponseEntity<>("Please enter password",
+                    HttpStatus.BAD_REQUEST);
+        }
         else
         {
            User u1=new User(userId,name,email,password);
@@ -52,7 +55,6 @@ private ResponseEntity<Object> newTweet(@RequestBody Tweet tweet)
     String email=tweet.getEmail();
     String password=tweet.getPassword();
     ResponseEntity<Object> responseEntity = null;
-
     for(int i=0;i<listOfUsers.size();i++)
     {
         if(listOfUsers.get(i).getEmail().equals(email)&&listOfUsers.get(i).getPassword().equals(password))
@@ -77,11 +79,57 @@ private ResponseEntity<Object> newTweet(@RequestBody Tweet tweet)
     }
     if(responseEntity==null)
     {
-        responseEntity = new ResponseEntity<>("Please create Account first",
+        responseEntity = new ResponseEntity<>("Invalid UserName and Password",
                 HttpStatus.BAD_REQUEST);
     }
     return responseEntity;
 }
+@PutMapping("/update1")
+private ResponseEntity<Object> update1(@RequestBody User user)
+{
+    String email=user.getEmail();
+    ResponseEntity responseEntity=null;
+    for(int i=0;i<listOfUsers.size();i++)
+    {
+        if(listOfUsers.get(i).getEmail().equals(email))
+        {
+            listOfUsers.remove(i);
+            User u1=new User(user.getUserId(), user.getName(), user.getEmail(),user.getPassword());
+            listOfUsers.add(u1);
+            responseEntity = new ResponseEntity<>("Update successfully",
+                    HttpStatus.OK);
+        }
+
+    }
+    if(responseEntity==null)
+    {
+        responseEntity = new ResponseEntity<>("User doesn't exist",
+                HttpStatus.BAD_REQUEST);
+    }
+    return responseEntity;
+}
+@DeleteMapping("/delete1")
+ResponseEntity remove(@RequestParam String email,@RequestParam String password)
+{
+    ResponseEntity responseEntity=null;
+    for(int i=0;i<listOfUsers.size();i++)
+    {
+        if(listOfUsers.get(i).getEmail().equals(email) && listOfUsers.get(i).getPassword().equals(password))
+        {
+            listOfUsers.remove(i);
+            responseEntity = new ResponseEntity<>("Delete SuccessFully",
+                    HttpStatus.OK);
+        }
+    }
+    if(responseEntity==null)
+    {
+        responseEntity = new ResponseEntity<>("User doesn't exist",
+                HttpStatus.BAD_REQUEST);
+    }
+
+    return responseEntity;
+}
+//fetch tweets of specific Users
 @GetMapping("fetch2")
 private List fetch2(@RequestParam String email)
 {
@@ -101,7 +149,6 @@ private List fetch2(@RequestParam String email)
             }
         }
         return !flag;
-
     }
     boolean emailValidator(String value)
     {
