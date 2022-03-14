@@ -11,5 +11,6 @@ public interface UserFBDao {
 public boolean delete(String email,String password);
 //List getUsersDetails();
     void follow(String email);
+    void block(String email);
     List allFollwers();
 }
