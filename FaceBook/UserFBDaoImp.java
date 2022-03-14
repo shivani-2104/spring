@@ -111,4 +111,34 @@ public List allFollwers()
         list=q5.getResultList();
         return list;
     }
+    public void block(String email)
+    {
+        session.beginTransaction();
+
+        Query q=session.createQuery("select userId from UserFB where email=:e");
+        q.setParameter("e",email);
+
+        int x=(Integer)q.getSingleResult();
+        System.out.println("x== "+x);
+
+        UserFB data=session.get(UserFB.class,x);
+        List list;
+
+        Query q5=session.createQuery("select blockedlist from UserFB where userId=:u");
+        q5.setParameter("u",x);
+        list=q5.getResultList();
+
+        if(list==null)
+        {
+            list=new ArrayList();
+        }
+
+        list.add(FacebookAPI.currentEmail);
+
+        data.setBlockedList(list);
+
+        data.setBlockedList2(""+list);
+        session.persist(data);
+        session.getTransaction().commit();
+    }
 }
