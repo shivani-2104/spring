@@ -161,4 +161,12 @@ ResponseEntity post(@RequestBody MultiValueMap<String ,String> formData)
         ResponseEntity responseEntity=new ResponseEntity("Block successfull",HttpStatus.OK);
         return responseEntity;
     }
+     @GetMapping("/seeAllBlockedUsers")
+    ModelAndView seeAllBlockedUsers()
+    {
+        List list=userFBDao.allBlockedUsers();
+        ModelAndView modelAndView = new ModelAndView("allFollowers");
+        modelAndView.getModel().put("list", list);
+        return modelAndView;
+    }
 }
