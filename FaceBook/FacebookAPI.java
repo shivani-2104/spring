@@ -149,4 +149,16 @@ ResponseEntity post(@RequestBody MultiValueMap<String ,String> formData)
         modelAndView.getModel().put("list", list);
         return modelAndView;
     }
+       @PostMapping("/block")
+    @ResponseBody
+    public ResponseEntity block(@RequestBody MultiValueMap <String,String > formData)
+    {
+        String email=formData.get("email").get(0);
+        userFBDao.block(email);
+//        System.out.println("list are "+list);
+//        ModelAndView modelAndView = new ModelAndView("allusers");
+//        modelAndView.getModel().put("list", list);
+        ResponseEntity responseEntity=new ResponseEntity("Block successfull",HttpStatus.OK);
+        return responseEntity;
+    }
 }
